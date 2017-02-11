@@ -33,4 +33,33 @@
     <a href="@Url.Action("MakeOffer", "Property", new {id = property.Id})" class="btn btn-primary">
         Make Offer
     </a>
+
+	foreach (var item in @property.MyOffers)
+	{
+		if (item.Status == OrangeBricks.Web.Models.OfferStatus.Pending)
+		{
+		<div style="background-color:#FFC200">
+			<strong>@item.Status</strong>
+			<strong>@item.Amount</strong>
+			<strong>@item.OfferDate.Value.Date</strong>
+		</div>
+		}
+		if (@item.Status == OrangeBricks.Web.Models.OfferStatus.Accepted)
+		{
+		<div style="background-color:green">
+			<strong>@item.Status</strong>
+			<strong>@item.Amount</strong>
+			<strong>@item.OfferDate.Value.Date</strong>
+		</div>
+		}
+		if (@item.Status == OrangeBricks.Web.Models.OfferStatus.Rejected)
+		{
+		<div style="background-color:red">
+			<strong>@item.Status</strong>
+			<strong>@item.Amount</strong>
+			<strong>@item.OfferDate.Value.Date</strong>
+		</div>
+
+		}
+	}
 }

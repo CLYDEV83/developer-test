@@ -23,7 +23,10 @@ namespace OrangeBricks.Web.Controllers.Property
         public ActionResult Index(PropertiesQuery query)
         {
             var builder = new PropertiesViewModelBuilder(_context);
-            var viewModel = builder.Build(query);
+
+            var userId = User.Identity.GetUserId();
+
+            var viewModel = builder.Build(query, userId);
 
             return View(viewModel);
         }

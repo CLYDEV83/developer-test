@@ -3,6 +3,10 @@ using System.Data.Entity.Core.Common.CommandTrees;
 using System.Linq;
 using OrangeBricks.Web.Controllers.Property.ViewModels;
 using OrangeBricks.Web.Models;
+using System.Collections.Generic;
+using System.Data.Entity;
+using Microsoft.AspNet.Identity;
+using System.Web;
 
 namespace OrangeBricks.Web.Controllers.Property.Builders
 {
@@ -15,37 +19,70 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
             _context = context;
         }
 
-        public PropertiesViewModel Build(PropertiesQuery query)
+        public PropertiesViewModel Build(PropertiesQuery query, string userId)
         {
+
             var properties = _context.Properties
-                .Where(p => p.IsListedForSale);
+                .Where(p => p.IsListedForSale)
+                .Include(x => x.Offers);
+                
 
             if (!string.IsNullOrWhiteSpace(query.Search))
             {
-                properties = properties.Where(x => x.StreetName.Contains(query.Search) 
+                properties = properties.Where(x => x.StreetName.Contains(query.Search)
                     || x.Description.Contains(query.Search));
             }
 
-            return new PropertiesViewModel
+            var propListings = new PropertiesViewModel
             {
-                Properties = properties
-                    .ToList()
-                    .Select(MapViewModel)
-                    .ToList(),
+                Properties = MapViewModels(properties, userId),
                 Search = query.Search
             };
+
+
+            return propListings;
         }
 
-        private static PropertyViewModel MapViewModel(Models.Property property)
+        private List<PropertyViewModel> MapViewModels(IQueryable<Models.Property> properties, string userId)
         {
-            return new PropertyViewModel
+            var propertyModels = new List<PropertyViewModel>();
+
+            properties.ToList()
+                .ForEach(p => propertyModels.Add(CreatePropertyModel(p, userId)));
+
+
+            return propertyModels;
+        }
+
+        private PropertyViewModel CreatePropertyModel(Models.Property property, string userId)
+        {
+
+            var propertyViewModel = new PropertyViewModel(property);
+
+            if (property.Offers.Any(o => o.BuyerUserId == userId))
             {
-                Id = property.Id,
-                StreetName = property.StreetName,
-                Description = property.Description,
-                NumberOfBedrooms = property.NumberOfBedrooms,
-                PropertyType = property.PropertyType
-            };
+                propertyViewModel.MyOffers = GetUsersOffersForProperty(property, userId);
+            }
+
+           
+            return propertyViewModel;
+        }
+
+        private List<BuyerOfferViewModel> GetUsersOffersForProperty(Models.Property property, string userId)
+        {
+            var myOffers = new List<BuyerOfferViewModel>();
+
+            var offers = property.Offers
+                .Where(p => p.BuyerUserId == userId && p.propertyId == property.Id)
+                .OrderByDescending(q => q.CreatedAt);
+
+            if (offers != null)
+            {
+                myOffers = offers.Select(o => new BuyerOfferViewModel(o))
+                .ToList();
+            }
+
+            return myOffers;
         }
     }
 }
