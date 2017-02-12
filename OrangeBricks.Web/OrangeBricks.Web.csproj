@@ -238,9 +238,9 @@
     <Compile Include="Migrations\201702111837100_UpdateOfferTable.Designer.cs">
       <DependentUpon>201702111837100_UpdateOfferTable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201702121103258_Viewing entity and relationship to property.cs" />
-    <Compile Include="Migrations\201702121103258_Viewing entity and relationship to property.Designer.cs">
-      <DependentUpon>201702121103258_Viewing entity and relationship to property.cs</DependentUpon>
+    <Compile Include="Migrations\201702121854470_Viewing Entity.cs" />
+    <Compile Include="Migrations\201702121854470_Viewing Entity.Designer.cs">
+      <DependentUpon>201702121854470_Viewing Entity.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -343,8 +343,8 @@
     <EmbeddedResource Include="Migrations\201702111837100_UpdateOfferTable.resx">
       <DependentUpon>201702111837100_UpdateOfferTable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201702121103258_Viewing entity and relationship to property.resx">
-      <DependentUpon>201702121103258_Viewing entity and relationship to property.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201702121854470_Viewing Entity.resx">
+      <DependentUpon>201702121854470_Viewing Entity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

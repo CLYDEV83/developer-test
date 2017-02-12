@@ -7,13 +7,13 @@ namespace OrangeBricks.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Viewingentityandrelationshiptoproperty : IMigrationMetadata
+    public sealed partial class ViewingEntity : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Viewingentityandrelationshiptoproperty));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ViewingEntity));
         
         string IMigrationMetadata.Id
         {
-            get { return "201702121103258_Viewing entity and relationship to property"; }
+            get { return "201702121854470_Viewing Entity"; }
         }
         
         string IMigrationMetadata.Source
