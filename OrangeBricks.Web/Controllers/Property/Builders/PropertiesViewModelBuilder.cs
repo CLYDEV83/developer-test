@@ -64,7 +64,11 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
                 propertyViewModel.MyOffers = GetUsersOffersForProperty(property, userId);
             }
 
-           
+            if (property.Viewings.Any(o => o.BuyerUserId == userId))
+            {
+                propertyViewModel.MyViewings = GetUsersViewingsForProperty(property, userId);
+            }
+
             return propertyViewModel;
         }
 
@@ -83,6 +87,22 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
             }
 
             return myOffers;
+        }
+
+        private List<ViewingViewModel> GetUsersViewingsForProperty(Models.Property property, string userId)
+        {
+            var myViewings = new List<ViewingViewModel>();
+
+            var viewings = property.Viewings
+                .Where(o => o.BuyerUserId == userId && o.PropertyId == property.Id);
+
+            if (viewings != null)
+            {
+                myViewings = viewings.Select(o => new ViewingViewModel(o))
+                .ToList();
+            }
+
+            return myViewings;
         }
     }
 }
