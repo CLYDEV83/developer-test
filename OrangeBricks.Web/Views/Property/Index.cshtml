@@ -1,34 +1,34 @@
 ﻿@model OrangeBricks.Web.Controllers.Property.ViewModels.PropertiesViewModel
 
 @{
-    ViewBag.Title = "Properties For Sale";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = "Properties For Sale";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Properties For Sale</h2>
 
 @using (Html.BeginForm("Index", "Property", FormMethod.Get, new { @class = "form-horizontal" }))
 {
-    <div class="form-group form-group-lg">
-        @Html.LabelFor(x => x.Search, "Search:", new { @class = "col-sm-2 control-label" })
-        <div class="col-sm-8">
-            @Html.TextBoxFor(m => m.Search, new { @class = "form-control", @placeholder = "Search by street or description..." })
-        </div>
-    <div class="col-sm-2">
-        <button type="submit" class="btn btn-default">Search</button>
-    </div>
-    </div>
-    
+	<div class="form-group form-group-lg">
+		@Html.LabelFor(x => x.Search, "Search:", new { @class = "col-sm-2 control-label" })
+		<div class="col-sm-8">
+			@Html.TextBoxFor(m => m.Search, new { @class = "form-control", @placeholder = "Search by street or description..." })
+		</div>
+		<div class="col-sm-2">
+			<button type="submit" class="btn btn-default">Search</button>
+		</div>
+	</div>
+
 }
 
 <p>@Model.Properties.Count properties matching your criteria...</p>
 
 @foreach (var property in Model.Properties)
 {
-    <hr />
-    <h3>@property.StreetName</h3>
-    <p>@property.NumberOfBedrooms bedroom @property.PropertyType</p>
-    <p>@property.Description</p>
+	<hr />
+	<h3>@property.StreetName</h3>
+	<p>@property.NumberOfBedrooms bedroom @property.PropertyType</p>
+	<p>@property.Description</p>
 
 	if (@property.MyViewings == null)
 	{
@@ -38,56 +38,129 @@
 	}
 	else
 	{
-	<h4>Viewings:</h4>
+
+	<div class="row">
+		<div class="col-md-6">
+			<h4>Your Current Viewings:</h4>
+		</div>
+	</div>
+
 		foreach (var item in @property.MyViewings)
 		{
 
-		<div class="form-group">
-			<label class="control-label">Booking Status:</label><br />
-			<strong>@item.Status</strong><br />
-			<label class="control-label">Date</label>
-			<strong>@item.Date.Value.Date</strong>
-			<label class="control-label">Time</label>
-			<strong>@item.Time</strong>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group col-md-2">
+					<label>Viewing Date</label>
+					<div>@item.Date.Value.ToShortDateString()</div>
+				</div>
+				<div class="form-group col-md-2">
+					<label>Viewing Time</label>
+					<div>@item.Time.Value</div>
+				</div>
+				<div class="form-group col-md-2">
+					<label>Booking Status</label>
+					<div>@item.Status</div>
+				</div>
+			</div>
 		</div>
 		}
 	}
 
+	if (@property.MyOffers == null)
+	{
+		<a href="@Url.Action("MakeOffer", "Property", new {id = property.Id})" class="btn btn-primary">
+			Make Offer
+		</a>
+	}
 
-    <a href="@Url.Action("MakeOffer", "Property", new {id = property.Id})" class="btn btn-primary">
-        Make Offer
-    </a>
+	else if (@property.MyOffers.Count > 1 || @property.MyOffers.Any(o => o.Status == OrangeBricks.Web.Models.OfferStatus.Rejected))
+	{
+		{
+			var currentLiveOffer = property.MyOffers.FirstOrDefault();
 
+			if (currentLiveOffer.Status != OrangeBricks.Web.Models.OfferStatus.Pending && currentLiveOffer.Status != OrangeBricks.Web.Models.OfferStatus.Accepted)
+			{
+			<a href="@Url.Action("MakeOffer", "Property", new {id = property.Id})" class="btn btn-primary">Make Another Offer</a>
+
+			}
+		}
+	}
 
 
 	if (@property.MyOffers != null)
 	{
-		<h4>Your Current Offers:</h4>
-
+	<div class="row">
+		<div class="col-md-6">
+			<h4>Your Current Offers:</h4>
+		</div>
+	</div>
 		foreach (var item in @property.MyOffers)
 		{
 			if (item.Status == OrangeBricks.Web.Models.OfferStatus.Pending)
 			{
-			<div style="background-color:#FFC200">
+			@*<div style="background-color:#FFC200">
 				<strong>@item.Status</strong>
 				<strong>@item.Amount</strong>
-				<strong>@item.OfferDate.Value.Date</strong>
+				<strong>@item.OfferDate.Value.ToShortDateString()</strong>
+			</div>*@
+
+
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group col-md-2">
+						<label>Status </label>
+						<div style="background-color:#FFC200">@item.Status</div>
+					</div>
+					<div class="form-group col-md-2">
+						<label>Amount</label>
+						<div>@item.Amount</div>
+					</div>
+					<div class="form-group col-md-2">
+						<label>Offer Date</label>
+						<div>@item.OfferDate.Value.ToShortDateString()</div>
+					</div>
+				</div>
 			</div>
+
 			}
 			if (@item.Status == OrangeBricks.Web.Models.OfferStatus.Accepted)
 			{
-			<div style="background-color:green">
-				<strong>@item.Status</strong>
-				<strong>@item.Amount</strong>
-				<strong>@item.OfferDate.Value.Date</strong>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group col-md-2">
+						<label>Status </label>
+						<div style="background-color:green">@item.Status</div>
+					</div>
+					<div class="form-group col-md-2">
+						<label>Amount</label>
+						<div>@item.Amount</div>
+					</div>
+					<div class="form-group col-md-2">
+						<label>Offer Date</label>
+						<div>@item.OfferDate.Value.ToShortDateString()</div>
+					</div>
+				</div>
 			</div>
 			}
 			if (@item.Status == OrangeBricks.Web.Models.OfferStatus.Rejected)
 			{
-			<div style="background-color:red">
-				<strong>@item.Status</strong>
-				<strong>@item.Amount</strong>
-				<strong>@item.OfferDate.Value.Date</strong>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group col-md-2">
+						<label>Status </label>
+						<div style="background-color:red">@item.Status</div>
+					</div>
+					<div class="form-group col-md-2">
+						<label>Amount</label>
+						<div>@item.Amount</div>
+					</div>
+					<div class="form-group col-md-2">
+						<label>Offer Date</label>
+						<div>@item.OfferDate.Value.ToShortDateString()</div>
+					</div>
+				</div>
 			</div>
 
 			}
