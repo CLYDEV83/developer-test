@@ -110,7 +110,7 @@ namespace OrangeBricks.Web.Controllers.Property
 
         [HttpPost]
         [OrangeBricksAuthorize(Roles = "Buyer")]
-        public ActionResult RequestViewing(BookViewingCommand command)
+        public ActionResult BookViewing(BookViewingCommand command)
         {
             var handler = new BookViewingCommandHandler(_context);
 
