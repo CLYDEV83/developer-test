@@ -24,9 +24,9 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
 
             var properties = _context.Properties
                 .Where(p => p.IsListedForSale)
-                .Include(x => x.Offers);
+                .Include(x => x.Offers)
+                .Include(v => v.Viewings);
                 
-
             if (!string.IsNullOrWhiteSpace(query.Search))
             {
                 properties = properties.Where(x => x.StreetName.Contains(query.Search)

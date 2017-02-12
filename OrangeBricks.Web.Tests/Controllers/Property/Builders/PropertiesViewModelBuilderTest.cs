@@ -8,6 +8,7 @@ using OrangeBricks.Web.Models;
 using System.Security.Principal;
 using System.Threading;
 using System.Web;
+using System;
 
 namespace OrangeBricks.Web.Tests.Controllers.Property.Builders
 {
@@ -140,6 +141,68 @@ namespace OrangeBricks.Web.Tests.Controllers.Property.Builders
             // Assert
             Assert.That(actualCount, Is.EqualTo(expectedCount));
         
+        }
+
+        [Test]
+        public void ShouldReturnMyViewings()
+        {
+
+            var builder = new PropertiesViewModelBuilder(_context);
+
+            DateTime today = DateTime.Today;
+           
+
+            var properties = new List<Models.Property>
+            {
+
+                
+                 new Models.Property
+                 {
+                     StreetName = "Smith Street",
+                     Description = "2 bed house",
+                     IsListedForSale = true,
+                     Offers = new List<Offer>(),
+                     Viewings = new List<Viewing>
+                     {
+                        new Viewing
+                        {
+                            BuyerUserId = myUserId,
+                            Status = Web.Controllers.Property.ViewModels.BookingStatus.Booked,
+                            Date = today.Date,
+                            Time = today.TimeOfDay,
+                            
+                        },
+                        new Viewing
+                        {
+                            BuyerUserId = "SomeoneElse@Somewhere.com",
+                            Status = Web.Controllers.Property.ViewModels.BookingStatus.Unconfirmed,
+                            Date = today.Date,
+                            Time = today.TimeOfDay,
+
+                        }
+                     }
+                 }
+
+
+             };
+
+
+            var testModels = Substitute.For<IDbSet<Models.Property>>().Initialize(properties.AsQueryable());
+
+            _context.Properties.Returns(testModels);
+
+            var result = builder.Build(new PropertiesQuery { Search = "" }, myUserId);
+
+            // Arrange
+            var expectedCount = 1;
+
+            // Act
+            var list = result.Properties.Select(o => o.MyViewings);
+
+            var actualCount = list.Count();
+
+            // Assert
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }

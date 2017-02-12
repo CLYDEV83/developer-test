@@ -30,9 +30,35 @@
     <p>@property.NumberOfBedrooms bedroom @property.PropertyType</p>
     <p>@property.Description</p>
 
+	if (@property.MyViewings == null)
+	{
+	<a href="@Url.Action("BookViewing", "Property", new {id = property.Id})" class="btn btn-primary">
+		Book a Viewing
+	</a>
+	}
+	else
+	{
+	<h4>Viewings:</h4>
+		foreach (var item in @property.MyViewings)
+		{
+
+		<div class="form-group">
+			<label class="control-label">Booking Status:</label><br />
+			<strong>@item.Status</strong><br />
+			<label class="control-label">Date</label>
+			<strong>@item.Date.Value.Date</strong>
+			<label class="control-label">Time</label>
+			<strong>@item.Time</strong>
+		</div>
+		}
+	}
+
+
     <a href="@Url.Action("MakeOffer", "Property", new {id = property.Id})" class="btn btn-primary">
         Make Offer
     </a>
+
+	<h4>Your Current Offers:</h4>
 
 	foreach (var item in @property.MyOffers)
 	{
